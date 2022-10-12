@@ -178,7 +178,24 @@ describe('addition of a new blog', () => {
     expect(response.body).toHaveLength(initialBlogs.length)
   })
 
-  test('401 if token is not provided/invalid')
+  test('401 if token is not provided/invalid', async () => {
+
+    const blogsAtStart = await blogsInDb()
+    const newBlog = {
+      title:'Canonical string reduction',
+      author:'Edsger W. Dijkstra',
+      url:'http://www.cs.utexas.edu/~EWD/transcriptions/EWD08xx/EWD808.html',
+      likes:12,
+    }
+
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
+
+    const blogsAtEnd = await blogsInDb()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+  })
 })
 
 describe('updating a blog', () => {
